@@ -77,3 +77,77 @@ try:
     print(convert_to_roman(-1))    # Should raise an error
 except ValueError as e:
     print(e)
+
+
+def romanum_to_num(roman):
+    # define a dictionary that contains valid roman numeral characters
+    valid_roman_numerals = {'I', 'V', 'X', 'L', 'C', 'D', 'M'}
+
+    # Check to see if the input provided to romanum_to_num contains only valid Roman numeral characters
+    if not all(char in valid_roman_numerals for char in roman):
+        raise ValueError("Input contains invalid Roman numeral characters.")
+
+    # define dictionary containing roman numerals map
+    roman_values = {'I': 1, 'V': 5, 'X': 10,
+                    'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+
+    # define previous and total values and instantiate them to 0
+    previous_value = 0
+    total = 0
+    for i in reversed(roman):
+        value = roman_values[i]
+        if value < previous_value:
+            total -= value
+        else:
+            total += value
+        previous_value = value
+
+    return total
+
+
+# Examples
+try:
+    print(romanum_to_num('MMXXII'))  # Should print 2022
+    print(romanum_to_num('I'))       # Should print 1
+    print(romanum_to_num('IV'))      # Should print 4
+    print(romanum_to_num("ABCD"))    # Invalid input, should raise an error
+except ValueError as e:
+    print(e)
+
+
+# Performing unit tests for both conversion functions
+class ConversionToRomanNumerals(unittest.TestCase):
+    # convert_to_roman function tests
+    def test_convert_to_roman_function(self):
+        self.assertEqual(convert_to_roman(1), "I")
+        self.assertEqual(convert_to_roman(4), "IV")
+        self.assertEqual(convert_to_roman(23), "XXIII")
+        self.assertEqual(convert_to_roman(1999), "MCMXCIX")
+        self.assertEqual(convert_to_roman(42), "XLII")
+
+    # test to raise error on non posititve input
+    def test_convert_to_roman_function_non_positive_input(self):
+        with self.assertRaises(ValueError):
+            convert_to_roman(0)
+        with self.assertRaises(ValueError):
+            convert_to_roman(-1)
+
+    # test for romanum_to_num function
+    def test_roman_to_digit_numbers(self):
+        self.assertEqual(romanum_to_num("III"), 3)
+        self.assertEqual(romanum_to_num("IV"), 4)
+        self.assertEqual(romanum_to_num("XCIX"), 99)
+        self.assertEqual(romanum_to_num("MMXXIV"), 2024)
+
+    # test for romanum_to_num function for invalid roman numerals
+    def test_roman_to_digit_with_invalid_characters(self):
+        with self.assertRaises(ValueError):
+            romanum_to_num("AXI")
+        with self.assertRaises(ValueError):
+            romanum_to_num("ABC")
+        with self.assertRaises(ValueError):
+            romanum_to_num("mmxxiv")
+
+
+if __name__ == '__main__':
+    unittest.main()
